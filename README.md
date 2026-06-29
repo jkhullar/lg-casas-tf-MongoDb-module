@@ -1,12 +1,14 @@
 # MongoDB Atlas Terraform Module
 
-Terraform module for creating MongoDB Atlas database clusters for the Casas project.
+Terraform module for creating MongoDB Atlas database clusters for the Casas project using the modern `mongodbatlas_advanced_cluster` resource.
 
 ## Overview
 
 This is a **single-cluster module** following the standard Terraform pattern. Use `for_each` in your consuming repository to create multiple MongoDB clusters efficiently.
 
 **Important:** MongoDB Atlas is a **separate cloud service** from GCP. You need to set up a MongoDB Atlas account and organization first before using this module.
+
+**Note:** This module uses the modern `mongodbatlas_advanced_cluster` resource (not the deprecated `mongodbatlas_cluster`).
 
 ## Prerequisites
 
