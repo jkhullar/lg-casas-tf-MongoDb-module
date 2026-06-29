@@ -1,0 +1,142 @@
+# Example terraform.tfvars for MongoDB Atlas Module
+# Copy this file to terraform.tfvars and fill in your values
+# NEVER commit terraform.tfvars to git (contains sensitive credentials)
+
+###############################################################################
+#                     MongoDB Atlas Credentials                               #
+###############################################################################
+
+# Get these from: MongoDB Atlas Console → Organization → Access Manager → API Keys
+# IMPORTANT: Keep these secret! Use environment variables or secrets manager in production
+mongodb_atlas_public_key    = "your-public-key-here"      # Example: "abcdefgh"
+mongodb_atlas_private_key   = "your-private-key-here"     # Example: "12345678-1234-1234-1234-123456789abc"
+
+# Get from: MongoDB Atlas Console → Project → Settings → Project ID
+mongodb_atlas_project_id    = "507f1f77bcf86cd799439011"  # Example Atlas Project ID
+
+###############################################################################
+#                     Basic Configuration                                      #
+###############################################################################
+
+# Cluster name (must be unique within your MongoDB Atlas project)
+cluster_name = "casas-app-db-dev"
+
+# Environment
+environment = "dev"
+
+###############################################################################
+#                     Cluster Configuration                                    #
+###############################################################################
+
+# Cloud provider (GCP recommended if your infrastructure is on GCP)
+provider_name = "GCP"
+
+# Region (use MongoDB Atlas region format, NOT GCP format!)
+# GCP europe-west1 → WESTERN_EUROPE
+# See: https://www.mongodb.com/docs/atlas/reference/google-gcp/
+provider_region = "WESTERN_EUROPE"
+
+# Instance size
+# M0  = Free tier (512MB, dev/test only, no backups)
+# M10 = 2GB RAM, 2 vCPU (~$60/month, minimum for production)
+# M20 = 4GB RAM, 2 vCPU (~$150/month)
+# M30 = 8GB RAM, 2 vCPU (~$300/month)
+provider_instance_size = "M10"
+
+# MongoDB version
+mongodb_major_version = "7.0"
+
+###############################################################################
+#                     Storage Configuration                                    #
+###############################################################################
+
+# Disk size (minimum 10GB for M10+, not configurable for M0)
+disk_size_gb = 10
+
+# Enable auto-scaling disk (automatically increases storage when needed)
+auto_scaling_disk_enabled = true
+
+###############################################################################
+#                     Backup Configuration                                     #
+###############################################################################
+
+# Enable continuous cloud backup (not available for M0, requires M10+)
+backup_enabled = true
+
+# Enable point-in-time restore (requires backup_enabled = true)
+pit_enabled = false
+
+###############################################################################
+#                     High Availability Configuration                          #
+###############################################################################
+
+# Cluster type (REPLICASET for single-region, GEOSHARDED for multi-region)
+cluster_type = "REPLICASET"
+
+# Number of replica set members (3, 5, or 7)
+# 3 = Standard high availability (recommended)
+# 5 = Higher availability
+# 7 = Maximum availability (rarely needed)
+replication_factor = 3
+
+# Number of shards (only for GEOSHARDED cluster_type)
+num_shards = 1
+
+###############################################################################
+#                     Security Configuration                                   #
+###############################################################################
+
+# Enable encryption at rest (uses cloud provider's encryption)
+encryption_at_rest_enabled = true
+
+# Enable termination protection (prevents accidental deletion)
+termination_protection_enabled = true
+
+###############################################################################
+#                     Labels/Tags                                              #
+###############################################################################
+
+# Custom labels for organization and cost tracking
+labels = {
+  purpose     = "application-database"
+  team        = "backend"
+  cost_center = "casas"
+  criticality = "high"
+}
+
+###############################################################################
+#                     Example: Free Tier for Development                       #
+###############################################################################
+
+# Uncomment for FREE tier (development/testing only):
+# provider_instance_size        = "M0"
+# disk_size_gb                  = 0.5  # Fixed for M0
+# backup_enabled                = false  # Not available on M0
+# auto_scaling_disk_enabled     = false  # Not available on M0
+# encryption_at_rest_enabled    = false  # Not available on M0
+# termination_protection_enabled = false  # Can delete freely for dev
+
+###############################################################################
+#                     Example: Production Configuration                        #
+###############################################################################
+
+# Recommended production settings:
+# cluster_name                  = "casas-app-db-prod"
+# environment                   = "prod"
+# provider_instance_size        = "M20"  # 4GB RAM
+# disk_size_gb                  = 50
+# backup_enabled                = true
+# pit_enabled                   = true   # Point-in-time restore
+# replication_factor            = 3
+# auto_scaling_disk_enabled     = true
+# encryption_at_rest_enabled    = true
+# termination_protection_enabled = true
+
+###############################################################################
+#                     Example: Multi-Region (Geo-Sharded)                      #
+###############################################################################
+
+# For global applications requiring low latency worldwide:
+# cluster_type                  = "GEOSHARDED"
+# num_shards                    = 2
+# # Define regions in consuming repo's replication_specs block
