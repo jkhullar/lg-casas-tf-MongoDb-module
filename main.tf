@@ -19,7 +19,7 @@ resource "mongodbatlas_advanced_cluster" "this" {
   termination_protection_enabled = var.termination_protection_enabled
 
   # Encryption at rest
-  encryption_at_rest_provider = var.encryption_at_rest_enabled ? var.provider_name : "NONE"
+  encryption_at_rest_provider = var.encryption_at_rest_enabled ? "GCP" : "NONE"
 
   # Replication specs - defines cluster topology
   replication_specs {
@@ -29,7 +29,7 @@ resource "mongodbatlas_advanced_cluster" "this" {
     # Region configuration
     region_configs {
       # Cloud provider and region
-      provider_name = var.provider_name
+      provider_name = "GCP"
       region_name   = var.provider_region
       priority      = 7  # Highest priority for this region
 
@@ -86,17 +86,5 @@ resource "mongodbatlas_advanced_cluster" "this" {
       key   = labels.key
       value = labels.value
     }
-  }
-
-  # Lifecycle configuration
-  lifecycle {
-    # Prevent accidental deletion - must be manually disabled to destroy
-    prevent_destroy = true
-
-    # Ignore changes to backup settings if managed externally
-    ignore_changes = [
-      backup_enabled,
-      pit_enabled
-    ]
   }
 }

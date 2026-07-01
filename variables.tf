@@ -32,19 +32,8 @@ variable "cluster_type" {
   }
 }
 
-variable "provider_name" {
-  description = "Cloud provider: GCP, AWS, or AZURE"
-  type        = string
-  default     = "GCP"
-
-  validation {
-    condition     = contains(["GCP", "AWS", "AZURE"], var.provider_name)
-    error_message = "Provider must be GCP, AWS, or AZURE."
-  }
-}
-
 variable "provider_region" {
-  description = "Cloud provider region (e.g., WESTERN_EUROPE for GCP, EU_WEST_1 for AWS)"
+  description = "GCP region for MongoDB Atlas cluster (e.g., WESTERN_EUROPE, US_CENTRAL_1)"
   type        = string
   default     = "WESTERN_EUROPE"
 }
